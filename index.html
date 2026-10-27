@@ -75,6 +75,11 @@ body:has(dialog[open]){overflow:visible!important}
 #success .success-tools>.primary,#success #done{box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:100%;min-height:52px;padding:13px 16px;margin:0;line-height:1.5;font-size:16px;text-align:center}
 #success #done{margin-top:18px}
 }
+
+/* Print fills the first row; calendar actions share the second row. */
+#success .success-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#success .success-tools>#print-task{grid-column:1/-1}
+#success .success-tools>.primary{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:52px;height:100%;margin:0;padding:13px 12px;line-height:1.5;text-align:center;white-space:normal;overflow-wrap:anywhere;box-sizing:border-box}
 </style>
 </head>
 
@@ -143,7 +148,7 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <p id="result" style="white-space:pre-line"></p>
 <p>
 <strong>Tietoja ei lähetetty eikä tallennettu.</strong><br> Tämä ei ole oikea ilmoittautuminen.</p>
-<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><a class="primary" id="add-calendar" href="https://calendar.google.com/" target="_blank" rel="noopener" aria-label="Lisää Google Kalenteriin (avautuu uuteen välilehteen)">Lisää Google Kalenteriin</a><button type="button" class="primary" id="download-calendar">Apple / muu kalenteri (.ics)</button></div>
+<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><a class="primary" id="add-calendar" href="https://calendar.google.com/" target="_blank" rel="noopener" aria-label="Lisää Google Kalenteriin (avautuu uuteen välilehteen)">Lisää Google Kalenteriin</a><button type="button" class="primary" id="download-calendar">Lisää muuhun kalenteriin</button></div>
 <p id="calendar-status" role="status"></p>
 <button type="button" class="primary" id="done">Takaisin tehtäviin</button>
 </section>
