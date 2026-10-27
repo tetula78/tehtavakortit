@@ -135,7 +135,7 @@ function row(label,value){return `
 <dt>${label}</dt>
 <dd>${value}</dd>
 </div>`}
-function render(){const t=tasks[index];$('#count').textContent=`Tehtävä ${index+1} / ${tasks.length}`;$('#card').innerHTML=`
+function render(){const t=tasks[index];$('#card').innerHTML=`
 <div class="cardtop">
 <h2 id="tasktitle">${t.title}</h2>
 <div class="chips">
