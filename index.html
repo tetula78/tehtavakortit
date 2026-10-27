@@ -150,7 +150,7 @@ function render(){const t=tasks[index];$('#card').innerHTML=`
 </div>
 </div>
 <div class="content">
-<dl>${row('Paikka',t.place, `<span class="loc"><span>${t.place}</span>${mapLink(t)}</span>`))}${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}</dl>
+<dl>${row('Paikka',`<span class="loc"><span>${t.place}</span>${mapLink(t)}</span>`)}${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}</dl>
 
 <dl>${row('Keneltä apu',t.help)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',t.travel)}${row('Parkkeeraaminen',t.parking)}</dl>
 <div class="benefit">
