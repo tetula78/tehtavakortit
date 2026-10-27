@@ -14,9 +14,41 @@ dialog{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contai
 @media(max-width:900px){.content{grid-template-columns:minmax(0,1fr);gap:0}.benefit{margin-top:20px}}
 @media(max-width:700px){dl>div{grid-template-columns:minmax(0,125px) minmax(0,1fr)}.photo{height:clamp(90px,24vw,160px)}.buttons>*{flex:1 1 180px}}
 @media(max-width:420px){header{padding:16px;gap:10px;flex-wrap:wrap}main{padding:18px 12px 32px}.card{border-radius:16px}.cardtop{padding:22px 18px 18px}.content{padding:12px 18px 18px}dl>div{grid-template-columns:minmax(0,1fr);gap:3px;padding:10px 0}dt{font-size:12px}dd{font-size:15px}.action{padding:18px}.benefit{padding:16px}h1{letter-spacing:-1px}.chip{font-size:13px}.eyebrow{letter-spacing:1px}dialog{width:calc(100% - 16px)}form,#success{padding:24px 18px}.buttons{flex-direction:column}.buttons>*{flex:auto;width:100%}}
+
+/* Compact desktop composition; mobile continues to reflow naturally. */
+.intro p{max-width:none}
+@media(min-width:901px){
+header{padding:14px 24px}
+main{padding-top:12px}
+.intro{margin-bottom:16px}
+h1{font-size:42px;margin:7px 0 9px}
+.toolbar{margin-bottom:10px}
+.nav button{width:40px;height:40px}
+.cardtop{padding:18px 30px 16px}
+.cardtop h2{font-size:30px;margin:0 0 12px}
+.content{padding:14px 30px;gap:14px 36px}
+dl>div{padding:6px 0}
+.benefit{padding:12px 16px}
+.benefit p{font-size:15px}
+.action{padding:14px 30px}
+.photo{height:80px}
+.indicators{margin:6px 0}
+.note{margin:8px auto}
+}
+@media(min-width:901px) and (max-height:800px){
+header{padding-top:10px;padding-bottom:10px}
+h1{font-size:36px}
+.intro{margin-bottom:10px}
+.cardtop{padding:14px 26px 12px}
+.cardtop h2{font-size:27px;margin-bottom:10px}
+.content{padding:10px 26px;gap:10px 30px}
+dl>div{padding:4px 0}
+.action{padding:10px 26px}
+.photo{height:64px}
+}
 </style></head><body>
 <header><div class="brand"><span aria-hidden="true">✳</span> Vapaaehtoiseksi</div><span class="tag">KOKEILTAVA DEMO</span></header>
-<main><section class="intro"><div class="eyebrow">Pieni panos. Yhteinen onnistuminen.</div><h1>Löydä oma tehtäväsi.</h1><p>Tule mukaan tekemään tapahtumia. Tutustu tehtäviin, löydä sinulle sopiva tapa auttaa ja kokeile ilmoittautumista.</p></section>
+<main><section class="intro"><div class="eyebrow">Pieni panos. Yhteinen onnistuminen.</div><h1>Löydä oma tehtäväsi.</h1><p>Löydä sopiva vapaaehtoistehtävä ja tule mukaan tapahtumiin.</p></section>
 <section aria-label="Vapaaehtoistehtävät" aria-roledescription="karuselli" id="carousel"><div class="toolbar"><span class="count" id="count" aria-live="polite" aria-atomic="true"></span><div class="nav"><button type="button" id="prev" aria-label="Edellinen tehtävä" aria-controls="card">←</button><button type="button" id="next" aria-label="Seuraava tehtävä" aria-controls="card">→</button></div></div><article class="card" id="card" aria-roledescription="dia" aria-labelledby="tasktitle"></article><div class="indicators" id="dots" aria-label="Valitse tehtävä"></div></section>
 <p class="note">Ajankohdat ovat alkuperäisistä tehtäväkorteista. Niissä ei ole vuosilukua. Tämä prototyyppi ei vahvista tapahtumien ajantasaisuutta.</p></main><footer>Prototyyppi · Lomake ei lähetä eikä tallenna henkilötietoja.</footer>
 <dialog id="modal" aria-labelledby="formtitle" aria-describedby="demoinfo"><button class="close" type="button" aria-label="Sulje ilmoittautuminen" id="close">×</button><form id="form"><h2 id="formtitle">Ilmoittaudu mukaan</h2><p class="demo" id="demoinfo"><strong>Tämä on demo.</strong> Voit kokeilla lomaketta keksityillä tiedoilla. Tietoja ei lähetetä minnekään eikä tallenneta. Oikea ilmoittautuminen tarvitsee taustapalvelun.</p><p style="font-size:13px;color:var(--muted)">Tähdellä (*) merkityt kentät ovat pakollisia.</p><div class="fields"><label>Valittu tehtävä<input id="task" name="task" readonly></label><label>Milloin<input id="when" name="when" readonly></label><label>Nimi *<input id="name" name="name" autocomplete="name" required maxlength="120"></label><label>Sähköposti *<input name="email" type="email" autocomplete="email" required maxlength="254"></label><label>Puhelin *<input name="phone" type="tel" autocomplete="tel" required maxlength="40" minlength="5"></label><label>Lisätiedot (vapaaehtoinen)<textarea name="details" maxlength="2000"></textarea></label><label class="consent"><input type="checkbox" name="consent" required><span>Suostun antamieni tietojen käsittelyyn tämän lomakekokeilun ajan. Ymmärrän, ettei demo lähetä eikä tallenna tietoja. *</span></label></div><div class="buttons"><button class="primary" type="submit">Kokeile ilmoittautumista</button><button class="secondary" id="cancel" type="button">Peruuta</button></div></form><section id="success" hidden tabindex="-1" aria-labelledby="successtitle"><div class="eyebrow">Lomakekokeilu valmis</div><h2 id="successtitle">Kiitos kokeilusta!</h2><p id="result"></p><p><strong>Tietoja ei lähetetty eikä tallennettu.</strong> Tämä ei ole oikea ilmoittautuminen. Oikea lähetys edellyttää taustapalvelun liittämistä sivuun.</p><button type="button" class="primary" id="done">Takaisin tehtäviin</button></section></dialog>
@@ -26,7 +58,7 @@ const tasks=[{"title": "Tapahtumavieraiden opastus", "when": "Lauantai 14.11. kl
 let index=0,opener=null;
 const $=s=>document.querySelector(s),modal=$('#modal'),form=$('#form');
 function row(label,value){return `<div><dt>${label}</dt><dd>${value}</dd></div>`}
-function render(){const t=tasks[index];$('#count').textContent=`Tehtävä ${index+1} / ${tasks.length}`;$('#card').innerHTML=`<div class="cardtop"><small>Vapaaehtoistehtävä · ${String(index+1).padStart(2,'0')}</small><h2 id="tasktitle">${t.title}</h2><div class="chips"><span class="chip">${t.when}</span><span class="chip">${t.duration}</span><span class="chip">${t.level}</span></div></div><div class="content"><dl>${row('Milloin',t.when)}${row('Kesto',t.duration)}${row('Vaativuus',t.level)}${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}</dl><dl>${row('Keneltä apu',t.help)}${row('Paikka',t.place)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',t.travel)}${row('Parkkeeraaminen',t.parking)}</dl><div class="benefit"><h3>Hyöty panoksesta</h3><p>${t.benefit}</p></div></div><div class="action"><p>Kiinnostuitko tehtävästä?<br>Jätä yhteystietosi lomakekokeilussa.</p><button type="button" class="primary" id="signup" aria-haspopup="dialog">Ilmoittaudu <span aria-hidden="true">↗</span></button></div><div class="photo" role="img" aria-label="Näkymä Turun kaupungin ylle, alkuperäisen tehtäväkortin kuvitus"></div>`;$('#signup').addEventListener('click',openForm);[...$('#dots').children].forEach((b,i)=>b.setAttribute('aria-current',String(i===index)))}
+function render(){const t=tasks[index];$('#count').textContent=`Tehtävä ${index+1} / ${tasks.length}`;$('#card').innerHTML=`<div class="cardtop"><h2 id="tasktitle">${t.title}</h2><div class="chips"><span class="chip">${t.when}</span><span class="chip">${t.duration}</span><span class="chip">${t.level}</span></div></div><div class="content"><dl>${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}</dl><dl>${row('Keneltä apu',t.help)}${row('Paikka',t.place)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',t.travel)}${row('Parkkeeraaminen',t.parking)}</dl><div class="benefit"><h3>Hyöty panoksesta</h3><p>${t.benefit}</p></div></div><div class="action"><p>Kiinnostuitko tehtävästä?<br>Jätä yhteystietosi lomakekokeilussa.</p><button type="button" class="primary" id="signup" aria-haspopup="dialog">Ilmoittaudu <span aria-hidden="true">↗</span></button></div><div class="photo" role="img" aria-label="Näkymä Turun kaupungin ylle, alkuperäisen tehtäväkortin kuvitus"></div>`;$('#signup').addEventListener('click',openForm);[...$('#dots').children].forEach((b,i)=>b.setAttribute('aria-current',String(i===index)))}
 function change(n){index=(n+tasks.length)%tasks.length;render()}
 tasks.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',`Näytä tehtävä ${i+1}: ${t.title}`);b.setAttribute('aria-controls','card');b.addEventListener('click',()=>change(i));$('#dots').append(b)});
 $('#prev').onclick=()=>change(index-1);$('#next').onclick=()=>change(index+1);
