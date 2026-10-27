@@ -56,6 +56,9 @@ dl>div{padding:4px 0}
 .loc{display:flex;align-items:center;justify-content:space-between;gap:8px}
 a.map{display:inline-flex;color:var(--blue);padding:9px 10px;margin:-9px -10px;flex-shrink:0}
 a.map:hover{color:#3b3d9e}
+a.foli{display:inline-flex;align-items:center;padding:9px 10px;margin:-9px -10px;flex-shrink:0;text-decoration:none}
+.fb{background:#ffd200;color:#20213d;font-weight:800;font-size:12px;border-radius:6px;padding:3px 8px;letter-spacing:.3px}
+a.foli:hover .fb{background:#f0c400}
 </style>
 </head>
 
@@ -130,9 +133,11 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 
 <script>
 'use strict';
-const tasks=[{"title": "Tapahtumavieraiden opastus", "when": "Lauantai 14.11. klo 12–14", "duration": "2 tuntia", "level": "Kevyt", "group": "4–6 vapaaehtoista", "help": "Alli Apuhenkilö, 050 147 2580", "place": "Turun kauppatori", "access": "Kyllä", "travel": "Paikalle Fölin busseilla.", "parking": "Toriparkki", "benefit": "Autat tapahtumavieraita ja mahdollistat tapahtuman onnistumisen"}, {"title": "Tapahtumalavan valvonta", "when": "Maanantai 14.6. klo 10–12", "duration": "2 tuntia", "level": "normaali", "group": "10 vapaaehtoista", "help": "Lauri Lavahenkilö, 050 369 0258", "place": "Kupittaanpuisto", "access": "Kyllä, sateella maa pehmeä", "travel": "Paikalle Fölin busseilla 6A ja 22", "parking": "Tahkonaukio, Lemminkäisenkatu 9 d", "benefit": "Valvot tapahtumalavan laitteita, autat kantamisessa ja opastat esiintyjät omaan pukeutumistilaan"}, {"title": "Lipunmyynti", "when": "Keskiviikko 27.7. klo 18–19", "duration": "1 tunti", "level": "Kevyt", "group": "2 vapaaehtoista", "help": "Liisa Lippu, 046 987 6540", "place": "Samppalinnan kesäteatteri", "access": "Ei, lipunmyyntikoppi ahdas", "travel": "Paikalle Fölin busseilla 5 ja 9", "parking": "Valtion virastotalo, Samppalinnankatu", "benefit": "Myyt lippuja Turku 800-näytelmän esitykseen"}];
+const tasks=[{"title": "Tapahtumavieraiden opastus", "when": "Lauantai 14.11. klo 12–14", "duration": "2 tuntia", "level": "Kevyt", "group": "4–6 vapaaehtoista", "help": "Alli Apuhenkilö, 050 147 2580", "place": "Turun kauppatori", "access": "Kyllä", "travel": "Paikalle Fölin busseilla.", "parking": "Toriparkki", "benefit": "Autat tapahtumavieraita ja mahdollistat tapahtuman onnistumisen", "lat": 60.4515, "lon": 22.2670}, {"title": "Tapahtumalavan valvonta", "when": "Maanantai 14.6. klo 10–12", "duration": "2 tuntia", "level": "normaali", "group": "10 vapaaehtoista", "help": "Lauri Lavahenkilö, 050 369 0258", "place": "Kupittaanpuisto", "access": "Kyllä, sateella maa pehmeä", "travel": "Paikalle Fölin busseilla 6A ja 22", "parking": "Tahkonaukio, Lemminkäisenkatu 9 d", "benefit": "Valvot tapahtumalavan laitteita, autat kantamisessa ja opastat esiintyjät omaan pukeutumistilaan", "lat": 60.4462, "lon": 22.2925}, {"title": "Lipunmyynti", "when": "Keskiviikko 27.7. klo 18–19", "duration": "1 tunti", "level": "Kevyt", "group": "2 vapaaehtoista", "help": "Liisa Lippu, 046 987 6540", "place": "Samppalinnan kesäteatteri", "access": "Ei, lipunmyyntikoppi ahdas", "travel": "Paikalle Fölin busseilla 5 ja 9", "parking": "Valtion virastotalo, Samppalinnankatu", "benefit": "Myyt lippuja Turku 800-näytelmän esitykseen", "lat": 60.4476, "lon": 22.2527}];
 const pin='<svg viewBox="0 0 24 35" width="18" height="26" aria-hidden="true" focusable="false"><path fill="currentColor" d="m12 2c-5.8 0-10.5 4.7-10.5 10.5 0 7.9 10.5 19.5 10.5 19.5s10.5-11.6 10.5-19.5c0-5.8-4.7-10.5-10.5-10.5zm0 14.2c-2.1 0-3.8-1.7-3.8-3.8s1.7-3.6 3.8-3.6 3.8 1.7 3.8 3.8c-0.1 2-1.7 3.6-3.8 3.6z"/></svg>';
 const mapLink=t=>`<a class="map" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.place+', Turku')}" target="_blank" rel="noopener" aria-label="Avaa ${t.place} kartalla (avautuu uuteen välilehteen)" title="Avaa kartalla">${pin}</a>`;
+const foliLink=t=>`<a class="foli" href="https://reittiopas.foli.fi/reitti/POS/${encodeURIComponent(t.place+', Turku::'+t.lat+','+t.lon)}" target="_blank" rel="noopener" aria-label="Avaa reittiopas kohteeseen ${t.place} (avautuu uuteen välilehteen)" title="Reittiopas tänne"><span class="fb" aria-hidden="true">Föli</span></a>`;
+const parkLink=t=>`<a class="map" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.parking+', Turku')}" target="_blank" rel="noopener" aria-label="Avaa pysäköinti ${t.parking} kartalla (avautuu uuteen välilehteen)" title="Avaa kartalla">${pin}</a>`;
 let index=0,opener=null;
 const $=s=>document.querySelector(s),modal=$('#modal'),form=$('#form');
 function row(label,value){return `
@@ -152,7 +157,7 @@ function render(){const t=tasks[index];$('#card').innerHTML=`
 <div class="content">
 <dl>${row('Paikka',`<span class="loc"><span>${t.place}</span>${mapLink(t)}</span>`)}${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}</dl>
 
-<dl>${row('Keneltä apu',t.help)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',t.travel)}${row('Parkkeeraaminen',t.parking)}</dl>
+<dl>${row('Keneltä apu',t.help)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',`<span class="loc"><span>${t.travel}</span>${foliLink(t)}</span>`)}${row('Parkkeeraaminen',`<span class="loc"><span>${t.parking}</span>${parkLink(t)}</span>`)}</dl>
 <div class="benefit">
 <h3>Hyöty panoksesta</h3>
 <p>${t.benefit}</p>
