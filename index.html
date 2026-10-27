@@ -143,7 +143,7 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <p id="result" style="white-space:pre-line"></p>
 <p>
 <strong>Tietoja ei lähetetty eikä tallennettu.</strong><br> Tämä ei ole oikea ilmoittautuminen.</p>
-<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><a class="primary" id="add-calendar" href="https://calendar.google.com/" target="_blank" rel="noopener" aria-label="Lisää kalenteriin (avautuu uuteen välilehteen)">Lisää kalenteriin</a></div>
+<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><a class="primary" id="add-calendar" href="https://calendar.google.com/" target="_blank" rel="noopener" aria-label="Lisää Google Kalenteriin (avautuu uuteen välilehteen)">Lisää Google Kalenteriin</a><button type="button" class="primary" id="download-calendar">Apple / muu kalenteri (.ics)</button></div>
 <p id="calendar-status" role="status"></p>
 <button type="button" class="primary" id="done">Takaisin tehtäviin</button>
 </section>
@@ -205,12 +205,25 @@ $('#print-task').onclick=()=>{$('#print-sheet').innerHTML=printMarkup(tasks[inde
 function calendarParts(t,year){const m=t.when.match(/(\d+)\.(\d+)\. klo (\d+)[–-](\d+)/);if(!m)throw new Error('Ajankohtaa ei voitu lukea.');return {year,month:Number(m[2]),day:Number(m[1]),start:Number(m[3]),end:Number(m[4])}}
 function helsinkiUTC(p,hour){const wall=Date.UTC(p.year,p.month-1,p.day,hour);let utc=wall;const f=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Helsinki',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});for(let i=0;i<3;i++){const a=Object.fromEntries(f.formatToParts(new Date(utc)).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));utc+=wall-Date.UTC(a.year,a.month-1,a.day,a.hour,a.minute,a.second)}return new Date(utc)}
 const icsDate=d=>d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
-const icsEscape=v=>String(v).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
-function foldICS(line){let out='',len=0;for(const c of line){const n=new TextEncoder().encode(c).length;if(len+n>75){out+='\r\n ';len=1}out+=c;len+=n}return out}
-function makeICS(t,year){const p=calendarParts(t,year);const desc='DEMO – tapahtuma ei ole oikea. Tämä ei ole ilmoittautuminen.\n'+taskDetails(t).map(([k,v])=>k+': '+v).join('\n');return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Tehtavakortit//FI','CALSCALE:GREGORIAN','BEGIN:VEVENT',`UID:tehtavakortti-${tasks.indexOf(t)}-${year}@demo.invalid`,`DTSTAMP:${icsDate(new Date())}`,`DTSTART:${icsDate(helsinkiUTC(p,p.start))}`,`DTEND:${icsDate(helsinkiUTC(p,p.end))}`,`SUMMARY:${icsEscape(t.title)}`,`LOCATION:${icsEscape(t.place+', Turku')}`,`DESCRIPTION:${icsEscape(desc)}`,'END:VEVENT','END:VCALENDAR'].map(foldICS).join('\r\n')+'\r\n'}
+const icsEscape=v=>String(v).replace(/\\/g,'\\\\').replace(/\r\n|\r|\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+function foldICS(line){
+  // RFC 5545: 75 UTF-8 octets per physical line. A continuation
+  // begins with exactly one added space, removed during unfolding.
+  const encoder=new TextEncoder();
+  let out='',bytes=0;
+  for(const character of line){
+    const size=encoder.encode(character).length;
+    if(bytes+size>75){out+='\r\n ';bytes=1;}
+    out+=character;bytes+=size;
+  }
+  return out;
+}
+function makeICS(t,year){const p=calendarParts(t,year);const desc='DEMO – tapahtuma ei ole oikea. Tämä ei ole ilmoittautuminen.\n'+taskDetails(t).map(([k,v])=>k+': '+v).join('\n');return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Tehtavakortit//FI','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',`UID:tehtavakortti-${tasks.indexOf(t)}-${year}@demo.invalid`,`DTSTAMP:${icsDate(new Date())}`,`DTSTART:${icsDate(helsinkiUTC(p,p.start))}`,`DTEND:${icsDate(helsinkiUTC(p,p.end))}`,`SUMMARY:${icsEscape(t.title)}`,`LOCATION:${icsEscape(t.place+', Turku')}`,`DESCRIPTION:${icsEscape(desc)}`,'END:VEVENT','END:VCALENDAR'].map(foldICS).join('\r\n')+'\r\n'}
 function googleCalendarURL(t){const p=calendarParts(t,2027);const params=new URLSearchParams({action:'TEMPLATE',text:t.title,dates:icsDate(helsinkiUTC(p,p.start))+'/'+icsDate(helsinkiUTC(p,p.end)),ctz:'Europe/Helsinki',location:t.place+', Turku',details:'DEMO – tapahtuma ei ole oikea. Tämä ei ole ilmoittautuminen.\n'+taskDetails(t).map(([k,v])=>k+': '+v).join('\n')});return 'https://calendar.google.com/calendar/render?'+params.toString()}
 $('#add-calendar').onclick=()=>{$('#add-calendar').href=googleCalendarURL(tasks[index]);$('#calendar-status').textContent='Merkintä avautuu kalenteriin. Vahvista se siellä Tallenna-painikkeella.'};
 
+
+$('#download-calendar').onclick=()=>{const data=makeICS(tasks[index],2027);const url=URL.createObjectURL(new Blob([data],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=tasks[index].title.toLowerCase().replace(/[^a-z0-9äöå]+/g,'-')+'.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#calendar-status').textContent='Kalenteritiedosto on ladattu. Avaa se puhelimesi kalenterissa ja vahvista tallennus.'};
 
 render();
 
