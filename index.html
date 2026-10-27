@@ -52,7 +52,7 @@ dl>div{padding:4px 0}
 .action{padding:10px 26px}
 .photo{height:64px}
 }
-
+#success #done{display:block;margin:18px auto 0}
 </style>
 </head>
 
@@ -75,7 +75,7 @@ dl>div{padding:4px 0}
 
 <section aria-label="Vapaaehtoistehtävät" aria-roledescription="karuselli" id="carousel">
 <div class="toolbar">
-<span class="count" id="count" aria-live="polite" aria-atomic="true"></span>
+	<!-- <span class="count" id="count" aria-live="polite" aria-atomic="true"></span> -->
 
 <div class="nav">
 <button type="button" id="prev" aria-label="Edellinen tehtävä" aria-controls="card">←</button>
@@ -109,7 +109,7 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <label class="consent"><input type="checkbox" name="consent" required><span>Suostun antamieni tietojen käsittelyyn. <br>Tämä on demo eikä se tallenna tai lähetä tietoja</span></label>
 </div>
 
-<div class="buttons" align=auto>
+<div class="buttons">
 <button class="primary" type="submit">Kokeile ilmoittautumista</button>
 <button class="secondary" id="cancel" type="button">Peruuta</button>
 </div>
@@ -120,8 +120,8 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <h2 id="successtitle">Kiitos kokeilusta!</h2>
 <p id="result" style="white-space:pre-line"></p>
 <p>
-<strong>Tietoja ei lähetetty eikä tallennettu.</strong><p> Tämä ei ole oikea ilmoittautuminen.</p>
-<button type="button" class="primary" id="done" aling=center>Takaisin tehtäviin</button>
+<strong>Tietoja ei lähetetty eikä tallennettu.</strong></p><p> Tämä ei ole oikea ilmoittautuminen.</p>
+<button type="button" class="primary" id="done">Takaisin tehtäviin</button>
 </section>
 </dialog>
 
