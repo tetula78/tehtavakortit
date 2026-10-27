@@ -59,6 +59,15 @@ a.map:hover{color:#3b3d9e}
 a.foli{display:inline-flex;align-items:center;padding:9px 10px;margin:-9px -10px;flex-shrink:0;text-decoration:none}
 .fb{background:#ffd200;color:#20213d;font-weight:800;font-size:12px;border-radius:6px;padding:3px 8px;letter-spacing:.3px}
 a.foli:hover .fb{background:#f0c400}
+
+#print-sheet{display:none}.calendar-tools{margin:22px 0;padding:18px;background:var(--pale);border-radius:12px}.calendar-tools input{max-width:180px}.calendar-tools p{font-size:13px}.success-tools{justify-content:center}.success-tools>*{flex:1 1 190px}#calendar-status{font-size:13px;text-align:center}
+@page{size:A4 portrait;margin:14mm}
+@media print{
+body{background:white!important;color:#111!important;font:10pt/1.35 Arial,sans-serif!important}
+body>header,body>main,body>footer,body>dialog{display:none!important}
+body:has(dialog[open]){overflow:visible!important}
+#print-sheet{display:block!important}#print-sheet h1{font-size:20pt;letter-spacing:0;margin:0 0 5mm;line-height:1.15}#print-sheet .print-demo{font-size:9pt;margin:0 0 4mm}#print-sheet dl{margin:0 0 5mm}#print-sheet dl>div{display:grid;grid-template-columns:43mm 1fr;border-bottom:1px solid #ddd;padding:1.5mm 0;gap:3mm}#print-sheet dt,#print-sheet dd{font-size:10pt;color:#111}#print-sheet h2{font-size:12pt;color:#111;letter-spacing:0;margin:3mm 0 2mm}#print-sheet .feedback-box{border:1px solid #555;height:39mm;break-inside:avoid}#print-sheet .feedback{break-inside:avoid}
+}
 </style>
 </head>
 
@@ -95,11 +104,7 @@ a.foli:hover .fb{background:#f0c400}
 
 <p class="note">Tämä on demosivu. Tapahtumat eivät ole oikeita.</p>
 </main>
-<footer>Prototyyppi · Lomake ei lähetä eikä tallenna henkilötietoja.
-  <svg viewBox="0 0 24 35" width="18" height="26" aria-hidden="true" focusable="false">
-    <path fill="currentColor" d="M416 64C433.7 64 448 78.3 448 96L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 96C192 78.3 206.3 64 224 64C241.7 64 256 78.3 256 96L256 128L384 128L384 96C384 78.3 398.3 64 416 64zM438 225.7C427.3 217.9 412.3 220.3 404.5 231L285.1 395.2L233 343.1C223.6 333.7 208.4 333.7 199.1 343.1C189.8 352.5 189.7 367.7 199.1 377L271.1 449C276.1 454 283 456.5 289.9 456C296.8 455.5 303.3 451.9 307.4 446.2L443.3 259.2C451.1 248.5 448.7 233.5 438 225.7z"/>
-  </svg>
-</footer>
+<footer>Prototyyppi · Lomake ei lähetä eikä tallenna henkilötietoja.</footer>
 
 <dialog id="modal" aria-labelledby="formtitle" aria-describedby="demoinfo">
 <button class="close" type="button" aria-label="Sulje ilmoittautuminen" id="close">×</button>
@@ -131,9 +136,12 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <p id="result" style="white-space:pre-line"></p>
 <p>
 <strong>Tietoja ei lähetetty eikä tallennettu.</strong><br> Tämä ei ole oikea ilmoittautuminen.</p>
+<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><button type="button" class="primary" id="add-calendar">Lisää kalenteriin</button></div>
+<p id="calendar-status" role="status"></p>
 <button type="button" class="primary" id="done">Takaisin tehtäviin</button>
 </section>
 </dialog>
+<section id="print-sheet" aria-label="Tulostettava tehtävälomake"></section>
 
 <script>
 'use strict';
@@ -178,11 +186,23 @@ function change(n){index=(n+tasks.length)%tasks.length;render()}
 tasks.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',`Näytä tehtävä ${i+1}: ${t.title}`);b.setAttribute('aria-controls','card');b.addEventListener('click',()=>change(i));$('#dots').append(b)});
 $('#prev').onclick=()=>change(index-1);$('#next').onclick=()=>change(index+1);
 $('#carousel').addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();change(index+(e.key==='ArrowRight'?1:-1))}});
-function openForm(e){opener=e.currentTarget;form.reset();form.hidden=false;$('#success').hidden=true;$('#task').value=tasks[index].title;$('#when').value=tasks[index].when;modal.setAttribute('aria-labelledby','formtitle');modal.showModal();$('#name').focus()}
+function openForm(e){$('#calendar-status').textContent='';opener=e.currentTarget;form.reset();form.hidden=false;$('#success').hidden=true;$('#task').value=tasks[index].title;$('#when').value=tasks[index].when;modal.setAttribute('aria-labelledby','formtitle');modal.showModal();$('#name').focus()}
 function closeForm(){modal.close()}
 ['close','cancel','done'].forEach(id=>$('#'+id).onclick=closeForm);
 modal.addEventListener('close',()=>{form.reset();$('#result').textContent='';opener?.focus()});
 form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;$('#result').innerHTML=`<strong>Valittu tehtävä:</strong>\n${tasks[index].title}.\n<strong>Ajankohta:</strong>\n${tasks[index].when}.`;form.reset();form.hidden=true;$('#success').hidden=false;modal.setAttribute('aria-labelledby','successtitle');$('#success').focus()});
+function taskDetails(t){return [['Milloin',t.when],['Paikka',t.place],['Kesto',t.duration],['Vaativuus',t.level],['Ryhmä',t.group],['Kokemusta tarvitaan','Ei'],['Perehdytys','Kyllä'],['Keneltä apu',t.help],['Esteetön paikka',t.access],['Saavutettavuus',t.travel],['Parkkeeraaminen',t.parking],['Hyöty panoksesta',t.benefit]]}
+function escapeHTML(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function printMarkup(t){return `<h1>${escapeHTML(t.title)}</h1><p class="print-demo">Tehtävä- ja palautelomake · DEMO – tapahtumat eivät ole oikeita. Tämä ei ole ilmoittautumisvahvistus.</p><dl>${taskDetails(t).map(([k,v])=>row(escapeHTML(k),escapeHTML(v))).join('')}</dl><div class="feedback"><h2>Mielipide tehtävästä:</h2><div class="feedback-box"></div></div><div class="feedback"><h2>Kehitettävää:</h2><div class="feedback-box"></div></div>`}
+$('#print-task').onclick=()=>{$('#print-sheet').innerHTML=printMarkup(tasks[index]);window.print()};
+function calendarParts(t,year){const m=t.when.match(/(\d+)\.(\d+)\. klo (\d+)[–-](\d+)/);if(!m)throw new Error('Ajankohtaa ei voitu lukea.');return {year,month:Number(m[2]),day:Number(m[1]),start:Number(m[3]),end:Number(m[4])}}
+function helsinkiUTC(p,hour){const wall=Date.UTC(p.year,p.month-1,p.day,hour);let utc=wall;const f=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Helsinki',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});for(let i=0;i<3;i++){const a=Object.fromEntries(f.formatToParts(new Date(utc)).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));utc+=wall-Date.UTC(a.year,a.month-1,a.day,a.hour,a.minute,a.second)}return new Date(utc)}
+const icsDate=d=>d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
+const icsEscape=v=>String(v).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+function foldICS(line){let out='',len=0;for(const c of line){const n=new TextEncoder().encode(c).length;if(len+n>75){out+='\r\n ';len=1}out+=c;len+=n}return out}
+function makeICS(t,year){const p=calendarParts(t,year);const desc='DEMO – tapahtuma ei ole oikea. Tämä ei ole ilmoittautuminen.\n'+taskDetails(t).map(([k,v])=>k+': '+v).join('\n');return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Tehtavakortit//FI','CALSCALE:GREGORIAN','BEGIN:VEVENT',`UID:tehtavakortti-${tasks.indexOf(t)}-${year}@demo.invalid`,`DTSTAMP:${icsDate(new Date())}`,`DTSTART:${icsDate(helsinkiUTC(p,p.start))}`,`DTEND:${icsDate(helsinkiUTC(p,p.end))}`,`SUMMARY:${icsEscape('[DEMO] '+t.title)}`,`LOCATION:${icsEscape(t.place+', Turku')}`,`DESCRIPTION:${icsEscape(desc)}`,'END:VEVENT','END:VCALENDAR'].map(foldICS).join('\r\n')+'\r\n'}
+$('#add-calendar').onclick=()=>{const year=2027;const data=makeICS(tasks[index],year);const url=URL.createObjectURL(new Blob([data],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=`tehtava-${index+1}-${year}.ics`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#calendar-status').textContent='Kalenteritiedosto on ladattu./p Avaa se kalenterisovelluksessa ja vahvista tallennus.'};
+
 render();
 
 </script>
