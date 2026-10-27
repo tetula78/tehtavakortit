@@ -143,7 +143,7 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <p id="result" style="white-space:pre-line"></p>
 <p>
 <strong>Tietoja ei lähetetty eikä tallennettu.</strong><br> Tämä ei ole oikea ilmoittautuminen.</p>
-<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><a class="primary" id="add-calendar" href="https://calendar.google.com/" target="_blank" rel="noopener" aria-label="Lisää Google Kalenteriin (avautuu uuteen välilehteen)">Lisää Google Kalenteriin</a></div>
+<div class="buttons success-tools"><button type="button" class="primary" id="print-task">Tulosta muistilappu</button><a class="primary" id="add-calendar" href="https://calendar.google.com/" target="_blank" rel="noopener" aria-label="Lisää kalenteriin (avautuu uuteen välilehteen)">Lisää kalenteriin</a></div>
 <p id="calendar-status" role="status"></p>
 <button type="button" class="primary" id="done">Takaisin tehtäviin</button>
 </section>
@@ -209,7 +209,7 @@ const icsEscape=v=>String(v).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').repla
 function foldICS(line){let out='',len=0;for(const c of line){const n=new TextEncoder().encode(c).length;if(len+n>75){out+='\r\n ';len=1}out+=c;len+=n}return out}
 function makeICS(t,year){const p=calendarParts(t,year);const desc='DEMO – tapahtuma ei ole oikea. Tämä ei ole ilmoittautuminen.\n'+taskDetails(t).map(([k,v])=>k+': '+v).join('\n');return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Tehtavakortit//FI','CALSCALE:GREGORIAN','BEGIN:VEVENT',`UID:tehtavakortti-${tasks.indexOf(t)}-${year}@demo.invalid`,`DTSTAMP:${icsDate(new Date())}`,`DTSTART:${icsDate(helsinkiUTC(p,p.start))}`,`DTEND:${icsDate(helsinkiUTC(p,p.end))}`,`SUMMARY:${icsEscape(t.title)}`,`LOCATION:${icsEscape(t.place+', Turku')}`,`DESCRIPTION:${icsEscape(desc)}`,'END:VEVENT','END:VCALENDAR'].map(foldICS).join('\r\n')+'\r\n'}
 function googleCalendarURL(t){const p=calendarParts(t,2027);const params=new URLSearchParams({action:'TEMPLATE',text:t.title,dates:icsDate(helsinkiUTC(p,p.start))+'/'+icsDate(helsinkiUTC(p,p.end)),ctz:'Europe/Helsinki',location:t.place+', Turku',details:'DEMO – tapahtuma ei ole oikea. Tämä ei ole ilmoittautuminen.\n'+taskDetails(t).map(([k,v])=>k+': '+v).join('\n')});return 'https://calendar.google.com/calendar/render?'+params.toString()}
-$('#add-calendar').onclick=()=>{$('#add-calendar').href=googleCalendarURL(tasks[index]);$('#calendar-status').textContent='Merkintä avautuu Google Kalenteriin vuodelle 2027. Vahvista se siellä Tallenna-painikkeella. Tarvittaessa kirjaudu Google-tilillesi.'};
+$('#add-calendar').onclick=()=>{$('#add-calendar').href=googleCalendarURL(tasks[index]);$('#calendar-status').textContent='Merkintä avautuu kalenteriin. Vahvista se siellä Tallenna-painikkeella.'};
 
 
 render();
