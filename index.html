@@ -75,7 +75,7 @@ dl>div{padding:4px 0}
 
 <section aria-label="Vapaaehtoistehtävät" aria-roledescription="karuselli" id="carousel">
 <div class="toolbar">
-<span class="count" id="count" aria-live="polite" aria-atomic="true"></span>
+	<!-- <span class="count" id="count" aria-live="polite" aria-atomic="true"></span> -->
 
 <div class="nav">
 <button type="button" id="prev" aria-label="Edellinen tehtävä" aria-controls="card">←</button>
@@ -97,7 +97,7 @@ dl>div{padding:4px 0}
 <h2 id="formtitle">Ilmoittaudu mukaan</h2>
 <p class="demo" id="demoinfo">
 <strong>Tämä on demo.</strong> 
-Voit kokeilla lomaketta. Tietoja ei lähetetä minnekään eikä tallenneta.</p>
+Voit kokeilla lomaketta. Tietoja ei lähetetä eikä tallenneta.</p>
 <p style="font-size:13px;color:var(--muted)">Tähdellä (*) merkityt kentät ovat pakollisia.</p>
 <div class="fields">
 <label>Valittu tehtävä<input id="task" name="task" readonly></label>
@@ -106,10 +106,10 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä minnekään eikä tallenneta.</p>
 <label>Sähköposti *<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
 <label>Puhelin *<input name="phone" type="tel" autocomplete="tel" required maxlength="40" minlength="5"></label>
 <label>Lisätiedot (vapaaehtoinen)<textarea name="details" maxlength="2000"></textarea></label>
-<label class="consent"><input type="checkbox" name="consent" required><span>Suostun antamieni tietojen käsittelyyn. Tämä on demo eikä se tallenna tai lähetä tietoja</span></label>
+<label class="consent"><input type="checkbox" name="consent" required><span>Suostun antamieni tietojen käsittelyyn. <br>Tämä on demo eikä se tallenna tai lähetä tietoja</span></label>
 </div>
 
-<div class="buttons">
+<div class="buttons" align=auto>
 <button class="primary" type="submit">Kokeile ilmoittautumista</button>
 <button class="secondary" id="cancel" type="button">Peruuta</button>
 </div>
@@ -120,8 +120,8 @@ Voit kokeilla lomaketta. Tietoja ei lähetetä minnekään eikä tallenneta.</p>
 <h2 id="successtitle">Kiitos kokeilusta!</h2>
 <p id="result" style="white-space:pre-line"></p>
 <p>
-<strong>Tietoja ei lähetetty eikä tallennettu.</strong> Tämä ei ole oikea ilmoittautuminen.</p>
-<button type="button" class="primary" id="done">Takaisin tehtäviin</button>
+<strong>Tietoja ei lähetetty eikä tallennettu.</strong><p> Tämä ei ole oikea ilmoittautuminen.</p>
+<button type="button" class="primary" id="done" aling=center>Takaisin tehtäviin</button>
 </section>
 </dialog>
 
@@ -154,7 +154,7 @@ function render(){const t=tasks[index];$('#count').textContent=`Tehtävä ${inde
 </div>
 <div class="action">
 <p>
-<strong>Kiinnostuitko tehtävästä?</strong>Jätä yhteystietosi lomakekokeilussa.</p>
+<strong>Kiinnostuitko tehtävästä? </strong>Jätä yhteystietosi lomakekokeilussa.</p>
 <button type="button" class="primary" id="signup" aria-haspopup="dialog">Ilmoittaudu <span aria-hidden="true">↗</span></button>
 </div>
 <div class="photo" role="img" aria-label="Näkymä Turun kaupungin ylle, ilmakuva"></div>
@@ -167,7 +167,7 @@ function openForm(e){opener=e.currentTarget;form.reset();form.hidden=false;$('#s
 function closeForm(){modal.close()}
 ['close','cancel','done'].forEach(id=>$('#'+id).onclick=closeForm);
 modal.addEventListener('close',()=>{form.reset();$('#result').textContent='';opener?.focus()});
-form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;$('#result').textContent=`Valittu tehtävä:\n${tasks[index].title}.\nAjankohta: ${tasks[index].when}.`;form.reset();form.hidden=true;$('#success').hidden=false;modal.setAttribute('aria-labelledby','successtitle');$('#success').focus()});
+form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;$('#result').textContent=`Valittu tehtävä:\n${tasks[index].title}.\nAjankohta:\n ${tasks[index].when}.`;form.reset();form.hidden=true;$('#success').hidden=false;modal.setAttribute('aria-labelledby','successtitle');$('#success').focus()});
 render();
 
 </script>
