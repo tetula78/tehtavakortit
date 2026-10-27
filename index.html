@@ -55,21 +55,20 @@ dl>div{padding:4px 0}
 
 </style>
 </head>
+
 <body>
 
 <header>
 <div class="brand">
-<span aria-hidden="true">✳
-</span> Vapaaehtoiseksi
+<span aria-hidden="true">✳</span> Vapaaehtoiseksi
 </div>
-<span class="tag">KOKEILTAVA DEMO
-</span>
+<span class="tag">KOKEILTAVA DEMO</span>
 </header>
 
 <main>
+
 <section class="intro">
-<div class="eyebrow">Pieni panos. Yhteinen onnistuminen.
-</div>
+<div class="eyebrow">Pieni panos. Yhteinen onnistuminen.</div>
 <h1>Anna kaksi tuntia Turulle</h1>
 <p>Löydä sopiva vapaaehtoistehtävä ja tule mukaan tapahtumiin.</p>
 </section>
@@ -77,33 +76,29 @@ dl>div{padding:4px 0}
 <section aria-label="Vapaaehtoistehtävät" aria-roledescription="karuselli" id="carousel">
 <div class="toolbar">
 <span class="count" id="count" aria-live="polite" aria-atomic="true"></span>
+
 <div class="nav">
 <button type="button" id="prev" aria-label="Edellinen tehtävä" aria-controls="card">←</button>
 <button type="button" id="next" aria-label="Seuraava tehtävä" aria-controls="card">→</button>
 </div>
 </div>
+
 <article class="card" id="card" aria-roledescription="dia" aria-labelledby="tasktitle"></article>
-<div class="indicators" id="dots" aria-label="Valitse tehtävä">
-</div>
+<div class="indicators" id="dots" aria-label="Valitse tehtävä"></div>
 </section>
 
-<p class="note">Tämä prototyyppi ei vahvista tapahtumien ajantasaisuutta.</p>
+<p class="note">Tämä on demosivu. Tapahtumat ei ole oikeinta.</p>
 </main>
-<footer>Prototyyppi · Lomake ei lähetä eikä tallenna henkilötietoja.
-</footer>
+<footer>Prototyyppi · Lomake ei lähetä eikä tallenna henkilötietoja.</footer>
 
 <dialog id="modal" aria-labelledby="formtitle" aria-describedby="demoinfo">
-<button class="close" type="button" aria-label="Sulje ilmoittautuminen" id="close">×
-</button>
+<button class="close" type="button" aria-label="Sulje ilmoittautuminen" id="close">×</button>
 <form id="form">
-<h2 id="formtitle">Ilmoittaudu mukaan
-</h2>
+<h2 id="formtitle">Ilmoittaudu mukaan</h2>
 <p class="demo" id="demoinfo">
-<strong>Tämä on demo.
-</strong> Voit kokeilla lomaketta. Tietoja ei lähetetä minnekään eikä tallenneta.
-</p>
-<p style="font-size:13px;color:var(--muted)">Tähdellä (*) merkityt kentät ovat pakollisia.
-</p>
+<strong>Tämä on demo.</strong> 
+Voit kokeilla lomaketta. Tietoja ei lähetetä minnekään eikä tallenneta.</p>
+<p style="font-size:13px;color:var(--muted)">Tähdellä (*) merkityt kentät ovat pakollisia.</p>
 <div class="fields">
 <label>Valittu tehtävä<input id="task" name="task" readonly></label>
 <label>Milloin<input id="when" name="when" readonly></label>
@@ -113,6 +108,7 @@ dl>div{padding:4px 0}
 <label>Lisätiedot (vapaaehtoinen)<textarea name="details" maxlength="2000"></textarea></label>
 <label class="consent"><input type="checkbox" name="consent" required><span>Suostun antamieni tietojen käsittelyyn. Tämä on demo eikä se tallenna tai lähetä tietoja</span></label>
 </div>
+
 <div class="buttons">
 <button class="primary" type="submit">Kokeile ilmoittautumista</button>
 <button class="secondary" id="cancel" type="button">Peruuta</button>
@@ -136,47 +132,33 @@ let index=0,opener=null;
 const $=s=>document.querySelector(s),modal=$('#modal'),form=$('#form');
 function row(label,value){return `
 <div>
-<dt>${label}
-</dt>
-<dd>${value}
-</dd>
+<dt>${label}</dt>
+<dd>${value}</dd>
 </div>`}
 function render(){const t=tasks[index];$('#count').textContent=`Tehtävä ${index+1} / ${tasks.length}`;$('#card').innerHTML=`
 <div class="cardtop">
-<h2 id="tasktitle">${t.title}
-</h2>
+<h2 id="tasktitle">${t.title}</h2>
 <div class="chips">
-<span class="chip">${t.when}
-</span>
-<span class="chip">${t.duration}
-</span>
-<span class="chip">${t.level}
-</span>
+<span class="chip">${t.when}</span>
+<span class="chip">${t.duration}</span>
+<span class="chip">${t.level}</span>
 </div>
 </div>
 <div class="content">
-<dl>${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}
-</dl>
-<dl>${row('Keneltä apu',t.help)}${row('Paikka',t.place)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',t.travel)}${row('Parkkeeraaminen',t.parking)}
-</dl>
+<dl>${row('Paikka',t.place)}${row('Ryhmä',t.group)}${row('Kokemusta tarvitaan','Ei')}${row('Perehdytys','Kyllä')}</dl>
+<dl>${row('Keneltä apu',t.help)}${row('Esteetön paikka',t.access)}${row('Saavutettavuus',t.travel)}${row('Parkkeeraaminen',t.parking)}</dl>
 <div class="benefit">
-<h3>Hyöty panoksesta
-</h3>
-<p>${t.benefit}
-</p>
+<h3>Hyöty panoksesta</h3>
+<p>${t.benefit}</p>
 </div>
 </div>
 <div class="action">
-<p>Kiinnostuitko tehtävästä?
-<br>Jätä yhteystietosi lomakekokeilussa.
-</p>
-<button type="button" class="primary" id="signup" aria-haspopup="dialog">Ilmoittaudu 
-<span aria-hidden="true">↗
-</span>
-</button>
+<p>
+<strong>Kiinnostuitko tehtävästä?</strong>Jätä yhteystietosi lomakekokeilussa.</p>
+<button type="button" class="primary" id="signup" aria-haspopup="dialog">Ilmoittaudu <span aria-hidden="true">↗</span></button>
 </div>
-<div class="photo" role="img" aria-label="Näkymä Turun kaupungin ylle, alkuperäisen tehtäväkortin kuvitus">
-</div>`;$('#signup').addEventListener('click',openForm);[...$('#dots').children].forEach((b,i)=>b.setAttribute('aria-current',String(i===index)))}
+<div class="photo" role="img" aria-label="Näkymä Turun kaupungin ylle, ilmakuva"></div>
+`;$('#signup').addEventListener('click',openForm);[...$('#dots').children].forEach((b,i)=>b.setAttribute('aria-current',String(i===index)))}
 function change(n){index=(n+tasks.length)%tasks.length;render()}
 tasks.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',`Näytä tehtävä ${i+1}: ${t.title}`);b.setAttribute('aria-controls','card');b.addEventListener('click',()=>change(i));$('#dots').append(b)});
 $('#prev').onclick=()=>change(index-1);$('#next').onclick=()=>change(index+1);
